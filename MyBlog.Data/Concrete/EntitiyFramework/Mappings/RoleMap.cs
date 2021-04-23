@@ -29,6 +29,19 @@ namespace MyBlog.Data.Concrete.EntitiyFramework.Mappings
             builder.Property(r => r.IsDeleted).IsRequired(true);
             builder.Property(r => r.Note).HasMaxLength(500);
             builder.ToTable("Roles");
+            //veri tabanı oluşurken buradaki veriler oluşturulacak
+            builder.HasData(new Role { 
+            Id=1,
+            Name="Admin",
+            Description="Admin rolü tüm haklara sahiptir",
+            IsActive=true,
+            IsDeleted=false,
+            CreatedByName="InitialCrate",
+            CreateDate=DateTime.Now,
+            ModiefiedByName="InitialModified",
+            ModiefiedDate=DateTime.Now,
+            Note="Admin Rolü"
+            });
         }
     }
 }
