@@ -10,6 +10,7 @@ namespace MyBlog.Shared.Utilities.Results.ComplexTypes
     {
         Succes=0,
         Error=1,
+        Warning=2,
         Info=3
     }
 }

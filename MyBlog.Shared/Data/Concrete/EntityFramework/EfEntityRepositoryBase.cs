@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace MyBlog.Shared.Data.Concrete.EntityFramework
 {
+    //IEntityRepository sınıfını implement edip içini generic bir şekilde dolduracağız.
     public class EfEntityRepositoryBase<TEntity> : IEntityRepository<TEntity> where TEntity : class, IEntity, new()
     {
         private readonly DbContext _context;

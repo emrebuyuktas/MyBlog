@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace MyBlog.Shared.Data.Abstract
 {
+
+    //bir çok yerde ortak olarak kullanacağımız metodları generiz olarak tanımlıyoruz.
     public interface IEntityRepository<T> where T:class,IEntity,new()//newlenebilir olmalı
     {
         //Expression metod çağırıldığında içine parametre olarak verilecek lambda sorgularını belirtir.
