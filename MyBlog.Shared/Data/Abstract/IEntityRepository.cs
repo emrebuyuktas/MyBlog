@@ -17,8 +17,8 @@ namespace MyBlog.Shared.Data.Abstract
         Task<T> GetAsync(Expression<Func<T,bool>> predicate,params Expression<Func<T,object>>[] includeProperties); //params sayesinde verilen birden fazla parametreyi arraye eklenecek
         //çoklu get işlemi için
         Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> predicate=null, params Expression<Func<T, object>>[] includeProperties);//predicate null gelirse bütün veriler getirilecek eğer null gelmezse yapılan filtrelemeye göre gelecek.
-        Task AddASync(T entity);
-        Task UpdateAsync(T entity);
+        Task<T> AddASync(T entity);
+        Task<T> UpdateAsync(T entity);
         Task DeleteAsync(T entity);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate); //kullanıcı vs eklenirken daha önce eklenmiş mi gibi kontroller için
         Task<int> CountAsync(Expression<Func<T, bool>> predicate);

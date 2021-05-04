@@ -1,4 +1,5 @@
-﻿using MyBlog.Data.Abstract;
+﻿using AutoMapper;
+using MyBlog.Data.Abstract;
 using MyBlog.Entities.Concrete;
 using MyBlog.Entities.Dtos;
 using MyBlog.Services.Abstract;
@@ -16,15 +17,17 @@ namespace MyBlog.Services.Concrete
     public class CategoryManager : ICategoryService
     {
         private readonly IUnitOfWork _unityOfWork;
+        private readonly IMapper _mapper;
 
-        public CategoryManager(IUnitOfWork unitOfWork)
+        public CategoryManager(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unityOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<IResult> Add(CategoryAddDto categoryAddDto, string createdByName)
+        public async Task<IDataResult<CategoryDto>> Add(CategoryAddDto categoryAddDto, string createdByName)
         {
-            await _unityOfWork.Categories.AddASync(new Category 
+            var addedCategory=await _unityOfWork.Categories.AddASync(new Category 
             { 
                  Name=categoryAddDto.Name,
                  Description=categoryAddDto.Description,
@@ -37,22 +40,38 @@ namespace MyBlog.Services.Concrete
                  IsDeleted=false
             });
             await _unityOfWork.SaveAsync();
-            return new Result(ResultStatus.Succes, $"{categoryAddDto.Name} adlı kategori başarıyla eklenmiştir");
+            return new DataResult<CategoryDto>(ResultStatus.Succes, $"{categoryAddDto.Name} adlı kategori başarıyla eklenmiştir",new CategoryDto 
+            { 
+                Category=addedCategory,
+                ResultStatus=ResultStatus.Succes,
+                Message= $"{categoryAddDto.Name} adlı kategori başarıyla eklenmiştir"
+            });
         }
 
-        public async Task<IResult> Delete(int categoryId, string modifiedByName)
+        public async Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedByName)
         {
             var category = await _unityOfWork.Categories.GetAsync(c => c.Id == categoryId);
             if (category != null)
             {
                 category.IsDeleted = true;
+                category.IsActive = false;
                 category.ModiefiedByName = modifiedByName;
                 category.ModiefiedDate = DateTime.Now;
-                await _unityOfWork.Categories.UpdateAsync(category);
+                var deletedCategory = await _unityOfWork.Categories.UpdateAsync(category);
                 await _unityOfWork.SaveAsync();
-                return new Result(ResultStatus.Succes, $"{category.Name} adlı kategori başarıyla silinmiştir");
+                return new DataResult<CategoryDto>(ResultStatus.Succes, $"{deletedCategory.Name} adlı kategori başarıyla silinmiştir", new CategoryDto
+                {
+                    Category = deletedCategory,
+                    ResultStatus = ResultStatus.Succes,
+                    Message = $"{deletedCategory.Name} adlı kategori başarıyla silinmiştir"
+                });
             }
-            return new Result(ResultStatus.Error, $"{category.Name} adlı kategori silinemedi");
+            return new DataResult<CategoryDto>(ResultStatus.Succes,"Böyle adlı kategori bulunamadı", new CategoryDto
+            {
+                Category = null,
+                ResultStatus = ResultStatus.Error,
+                Message = "Böyle adlı kategori bulunamadı"
+            });
         }
 
         public async Task<IDataResult<CategoryDto>> Get(int categoryId)
@@ -63,30 +82,53 @@ namespace MyBlog.Services.Concrete
                 Category=category,
                 ResultStatus=ResultStatus.Succes
                 });
-            return new DataResult<CategoryDto>(ResultStatus.Error, "Böyle bir kategori bulunamadı", null);
+            return new DataResult<CategoryDto>(ResultStatus.Error, "Böyle bir kategori bulunamadı", new CategoryDto 
+            {
+                Category=category,
+                ResultStatus=ResultStatus.Error,
+                Message= "Böyle bir kategori bulunamadı"
+            });
         }
 
         public async Task<IDataResult<CategoryListDto>> GetAll()
         {
             var categories = await _unityOfWork.Categories.GetAllAsync(null,c=>c.Articles);
             if (categories.Count > -1)
-                return new DataResult<CategoryListDto>(ResultStatus.Succes, new CategoryListDto { 
-                
-                Categories=categories,
-                ResultStatus=ResultStatus.Succes
+            {
+                return new DataResult<CategoryListDto>(ResultStatus.Succes, new CategoryListDto
+                {
+
+                    Categories = categories,
+                    ResultStatus = ResultStatus.Succes
                 });
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı",null);
+            }
+            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı", new CategoryListDto
+            {
+
+                Categories = categories,
+                ResultStatus = ResultStatus.Error,
+                Message="Hiçbir kategori bulunamadı."
+  
+            });
         }
 
         public async Task<IDataResult<CategoryListDto>> GetAllByNonDeleted()
         {
             var categories = await _unityOfWork.Categories.GetAllAsync(c=>!c.IsDeleted,c=>c.Articles);
             if (categories.Count > -1)
-                return new DataResult<CategoryListDto>(ResultStatus.Succes, new CategoryListDto { 
-                Categories=categories,
-                ResultStatus=ResultStatus.Succes
+            {
+                return new DataResult<CategoryListDto>(ResultStatus.Succes, new CategoryListDto
+                {
+                    Categories = categories,
+                    ResultStatus = ResultStatus.Succes,
                 });
-            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı", null);
+            }
+            return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı", new CategoryListDto
+            {
+                Categories = categories,
+                ResultStatus = ResultStatus.Error,
+               Message = "Aktif hiçbir kategori bulunamadı."
+            });
         }
 
         public async Task<IDataResult<CategoryListDto>> GetAllByNonDeletedAndActive()
@@ -99,6 +141,18 @@ namespace MyBlog.Services.Concrete
                     ResultStatus = ResultStatus.Succes
                 });
             return new DataResult<CategoryListDto>(ResultStatus.Error, "Hiçbir kategori bulunamadı", null);
+        }
+
+        public async Task<IDataResult<CategoryUpdateDto>> GetCategoryUpdateDto(int categoryId)
+        {
+            var result = await _unityOfWork.Categories.AnyAsync(c=>c.Id==categoryId);
+            if (result)
+            {
+                var category = await _unityOfWork.Categories.GetAsync(c => c.Id == categoryId);
+                var categoryUpdateDto = _mapper.Map<CategoryUpdateDto>(category);
+                return new DataResult<CategoryUpdateDto>(ResultStatus.Succes, categoryUpdateDto);
+            }
+            return new DataResult<CategoryUpdateDto>(ResultStatus.Error, "Böyle bir kategori bulunamadı",null);
         }
 
         public async Task<IResult> HardDelete(int categoryId)
@@ -114,12 +168,10 @@ namespace MyBlog.Services.Concrete
             return new Result(ResultStatus.Error, $"{category.Name} adlı kategori silinemedi");
         }
 
-        public async Task<IResult> Update(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
+        public async Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto, string modifiedByName)
         {
             var category = await _unityOfWork.Categories.GetAsync(c => c.Id == categoryUpdateDto.Id);
             //bu kısımlar automapper ile değiştirilebilir!
-            if (category != null)
-            {
                 category.Name = categoryUpdateDto.Name;
                 category.Description = categoryUpdateDto.Description;
                 category.Note = categoryUpdateDto.Note;
@@ -127,11 +179,14 @@ namespace MyBlog.Services.Concrete
                 category.IsDeleted = categoryUpdateDto.IsDeleted;
                 category.ModiefiedByName = modifiedByName;
                 category.ModiefiedDate = DateTime.Now;
-                await _unityOfWork.Categories.UpdateAsync(category);
+                var updatedCategpry=await _unityOfWork.Categories.UpdateAsync(category);
                 await _unityOfWork.SaveAsync();
-                return new Result(ResultStatus.Succes, $"{categoryUpdateDto.Name} adlı kategori başarıyla güncellenmiştir");
-            }
-            return new Result(ResultStatus.Error, "Böyle bir kategori bulunamadı");
+                return new DataResult<CategoryDto>(ResultStatus.Succes, $"{categoryUpdateDto.Name} adlı kategori başarıyla güncellenmiştir",new CategoryDto 
+                {
+                    Category=updatedCategpry,
+                    ResultStatus=ResultStatus.Succes,
+                    Message= $"{categoryUpdateDto.Name} adlı kategori başarıyla güncellenmiştir"
+                });
         }
     }
 }
