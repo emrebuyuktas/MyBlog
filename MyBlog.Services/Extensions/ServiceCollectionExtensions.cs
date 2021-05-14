@@ -2,6 +2,7 @@
 using MyBlog.Data.Abstract;
 using MyBlog.Data.Concrete;
 using MyBlog.Data.Concrete.EntitiyFramework.Contexts;
+using MyBlog.Entities.Concrete;
 using MyBlog.Services.Abstract;
 using MyBlog.Services.Concrete;
 using System;
@@ -17,6 +18,19 @@ namespace MyBlog.Services.Extensions
         public static IServiceCollection loadMyServices(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddDbContext<MyBlogContext>();
+            serviceCollection.AddIdentity<User, Role>(options=> 
+            {
+                //şifrede rakamlar zorunlu olmalı mı
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 12;
+                options.Password.RequiredUniqueChars = 1;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.User.AllowedUserNameCharacters= "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -._@+!";
+                options.User.RequireUniqueEmail = true;
+
+            }).AddEntityFrameworkStores<MyBlogContext>();
             serviceCollection.AddScoped<IUnitOfWork,UnitOfWork>();
             serviceCollection.AddScoped<ICategoryService, CategoryManager>();
             serviceCollection.AddScoped<IArticleService, ArticleManager>();

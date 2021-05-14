@@ -1,14 +1,15 @@
 ﻿using MyBlog.Entities.Concrete;
-using MyBlog.Shared.Data.Abstract;
+using MyBlog.Shared.Entities.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyBlog.Data.Abstract
+namespace MyBlog.Entities.Dtos
 {
-    public interface IRoleRepository: IEntityRepository<Role>
+    public class UserListDto:DtoGetBase
     {
+        public IList<User> Users { get; set; }
     }
 }
