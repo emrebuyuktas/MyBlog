@@ -14,7 +14,9 @@ namespace MyBlog.Shared.Data.Abstract
     {
         //Expression metod çağırıldığında içine parametre olarak verilecek lambda sorgularını belirtir.
         //Tek bir get işlemi için.
-        Task<T> GetAsync(Expression<Func<T,bool>> predicate,params Expression<Func<T,object>>[] includeProperties); //params sayesinde verilen birden fazla parametreyi arraye eklenecek
+        Task<T> GetAsync(Expression<Func<T,bool>> predicate,params Expression<Func<T,object>>[] includeProperties); 
+        //var kullanici=repository.GetaAsync(k=>k.id==15)
+        //params sayesinde verilen birden fazla parametreyi arraye eklenecek, birden fazla lambda gönderebviliriz.
         //çoklu get işlemi için
         Task<IList<T>> GetAllAsync(Expression<Func<T, bool>> predicate=null, params Expression<Func<T, object>>[] includeProperties);//predicate null gelirse bütün veriler getirilecek eğer null gelmezse yapılan filtrelemeye göre gelecek.
         Task<T> AddASync(T entity);

@@ -1,4 +1,5 @@
 ﻿$(document).ready(function () {
+    //categoriesTable id'li htlm elementini datatable haline getir
     $('#categoriesTable').DataTable({
         dom:
             "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +

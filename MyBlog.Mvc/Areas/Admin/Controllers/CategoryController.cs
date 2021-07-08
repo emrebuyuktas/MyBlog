@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyBlog.Entities.Dtos;
 using MyBlog.Mvc.Areas.Admin.Models;
 using MyBlog.Services.Abstract;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 namespace MyBlog.Mvc.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -41,7 +43,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
                 var result = await _categoryService.Add(CategoryAddDto, "Emre Büyüktaş");
                 if (result.resultStatus == ResultStatus.Succes)
                 {
-                    var categoryAjaxModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewMode 
+                    var categoryAjaxModel = JsonSerializer.Serialize(new CategoryAddAjaxViewMode 
                     {
                         CategoryDto=result.Data,
                         CategoryAddPartial=await this.RenderViewToStringAsync("_CategoryAddPartialView",CategoryAddDto)
@@ -49,7 +51,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
                     return Json(categoryAjaxModel);
                 }
             }
-            var categoryAjaxErrorModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewMode
+            var categoryAjaxErrorModel = JsonSerializer.Serialize(new CategoryAddAjaxViewMode
             {
                 CategoryAddPartial = await this.RenderViewToStringAsync("_CategoryAddPartialView", CategoryAddDto)
             });

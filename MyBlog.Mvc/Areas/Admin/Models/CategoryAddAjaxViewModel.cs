@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyBlog.Mvc.Areas.Admin.Models
 {
-    public class CategoryUpdateAjaxViewMode
+    public class CategoryAddAjaxViewMode
     {
         public CategoryAddDto CategoryAddDto { get; set; }
         public string CategoryAddPartial { get; set; }
