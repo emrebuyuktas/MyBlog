@@ -3,6 +3,7 @@ using MyBlog.Data.Abstract;
 using MyBlog.Entities.Concrete;
 using MyBlog.Entities.Dtos;
 using MyBlog.Services.Abstract;
+using MyBlog.Services.Utilities;
 using MyBlog.Shared.Utilities.Results.Abstract;
 using MyBlog.Shared.Utilities.Results.ComplexTypes;
 using MyBlog.Shared.Utilities.Results.Concrete;
@@ -37,6 +38,32 @@ namespace MyBlog.Services.Concrete
 
         }
 
+        public async Task<IDataResult<int>> Count()
+        {
+            var articlesCount = await _unitOfWork.Articles.CountAsync();
+            if (articlesCount > -1)
+            {
+                return new DataResult<int>(ResultStatus.Succes, articlesCount);
+            }
+            else
+            {
+                return new DataResult<int>(ResultStatus.Error, $"Beklenmeyen bir hata ile karşılaşıldı", -1);
+            }
+        }
+
+        public async Task<IDataResult<int>> CountByIsDeleted()
+        {
+            var articlesCount = await _unitOfWork.Articles.CountAsync(c=>!c.IsDeleted);
+            if (articlesCount > -1)
+            {
+                return new DataResult<int>(ResultStatus.Succes, articlesCount);
+            }
+            else
+            {
+                return new DataResult<int>(ResultStatus.Error, $"Beklenmeyen bir hata ile karşılaşıldı", -1);
+            }
+        }
+
         public async Task<IResult> Delete(int articleId, string modifiedByName)
         {
             var result = await _unitOfWork.Articles.AnyAsync(a=>a.Id==articleId);
@@ -64,7 +91,7 @@ namespace MyBlog.Services.Concrete
                     ResultStatus=ResultStatus.Succes
                 });
             }
-            return new DataResult<ArticleDto>(ResultStatus.Error, "Böyle bir makale bulunamadı",null);
+            return new DataResult<ArticleDto>(ResultStatus.Error,Messages.Article.NotFound(isPlural:false),null);
         }
 
         public async Task<IDataResult<ArticleListdDto>> GetAll()
@@ -78,7 +105,7 @@ namespace MyBlog.Services.Concrete
                     ResultStatus=ResultStatus.Succes
                 });
             }
-            return new DataResult<ArticleListdDto>(ResultStatus.Error, "Makaleler bulunamadı",null);
+            return new DataResult<ArticleListdDto>(ResultStatus.Error, Messages.Article.NotFound(isPlural:true),null);
         }
 
         public async Task<IDataResult<ArticleListdDto>> GetAllByCategpry(int categoryId)

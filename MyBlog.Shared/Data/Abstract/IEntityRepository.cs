@@ -23,6 +23,6 @@ namespace MyBlog.Shared.Data.Abstract
         Task<T> UpdateAsync(T entity);
         Task DeleteAsync(T entity);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate); //kullanıcı vs eklenirken daha önce eklenmiş mi gibi kontroller için
-        Task<int> CountAsync(Expression<Func<T, bool>> predicate);
+        Task<int> CountAsync(Expression<Func<T, bool>> predicate=null);
     }
 }

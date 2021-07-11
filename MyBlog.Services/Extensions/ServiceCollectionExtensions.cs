@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MyBlog.Data.Abstract;
 using MyBlog.Data.Concrete;
 using MyBlog.Data.Concrete.EntitiyFramework.Contexts;
@@ -15,9 +16,9 @@ namespace MyBlog.Services.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection loadMyServices(this IServiceCollection serviceCollection)
+        public static IServiceCollection loadMyServices(this IServiceCollection serviceCollection,string connectionString)
         {
-            serviceCollection.AddDbContext<MyBlogContext>();
+            serviceCollection.AddDbContext<MyBlogContext>(options=>options.UseSqlServer(connectionString));
             serviceCollection.AddIdentity<User, Role>(options=> 
             {
                 //şifrede rakamlar zorunlu olmalı mı

@@ -17,9 +17,13 @@ namespace MyBlog.Data.Concrete.EntitiyFramework.Contexts
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=MyBlog;Trusted_Connection=True;Connect Timeout=30;MultipleActiveResultSets=True;");
+        //}
+        public MyBlogContext(DbContextOptions<MyBlogContext> options):base(options)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=MyBlog;Trusted_Connection=True;Connect Timeout=30;MultipleActiveResultSets=True;");
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

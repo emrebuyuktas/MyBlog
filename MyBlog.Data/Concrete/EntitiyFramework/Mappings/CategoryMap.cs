@@ -27,7 +27,7 @@ namespace MyBlog.Data.Concrete.EntitiyFramework.Mappings
             builder.Property(c => c.IsActive).IsRequired(true);
             builder.Property(c => c.IsDeleted).IsRequired(true);
             builder.Property(c => c.Note).HasMaxLength(500);
-            builder.ToTable("Categpries");
+            builder.ToTable("Categories");
 
             builder.HasData(new Category { 
                 Id=1,
