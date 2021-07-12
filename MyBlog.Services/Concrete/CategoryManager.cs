@@ -62,7 +62,7 @@ namespace MyBlog.Services.Concrete
             }
         }
 
-        public async Task<IDataResult<int>> CountByIsDeleted()
+        public async Task<IDataResult<int>> CountByNonDeleted()
         {
             var categoriesCount = await _unityOfWork.Categories.CountAsync(c=>!c.IsDeleted);
             if (categoriesCount > -1)
@@ -119,7 +119,8 @@ namespace MyBlog.Services.Concrete
 
         public async Task<IDataResult<CategoryListDto>> GetAll()
         {
-            var categories = await _unityOfWork.Categories.GetAllAsync(null,c=>c.Articles);
+            //var categories = await _unityOfWork.Categories.GetAllAsync(null,c=>c.Articles);
+            var categories = await _unityOfWork.Categories.GetAllAsync(null);
             if (categories.Count > -1)
             {
                 return new DataResult<CategoryListDto>(ResultStatus.Succes, new CategoryListDto

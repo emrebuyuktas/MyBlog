@@ -284,6 +284,7 @@
                     },
                     error: function (error) {
                         toastr.error(`${err.responseText}`, "Hata!");
+                    }
                 });
             });
 

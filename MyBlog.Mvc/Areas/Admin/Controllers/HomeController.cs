@@ -32,9 +32,9 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var categoriesCount = await _categoryService.CountByIsDeleted();
-            var artcilesCount = await _articleService.CountByIsDeleted();
-            var commentCount = await _commentService.CountByIsDeleted();
+            var categoriesCount = await _categoryService.CountByNonDeleted();
+            var artcilesCount = await _articleService.CountByNonDeleted();
+            var commentCount = await _commentService.CountByNonDeleted();
             var userCount = await _userManager.Users.CountAsync();
             var allArtciles = await _articleService.GetAll();
             if (categoriesCount.resultStatus==ResultStatus.Succes && artcilesCount.resultStatus == ResultStatus.Succes && 
