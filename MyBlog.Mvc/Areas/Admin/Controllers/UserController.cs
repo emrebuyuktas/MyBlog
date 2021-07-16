@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyBlog.Entities.ComplexTypes;
 using MyBlog.Entities.Concrete;
 using MyBlog.Entities.Dtos;
 using MyBlog.Mvc.Areas.Admin.Models;
@@ -121,7 +122,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var uploadedUserImage = await _ımageHelper.uploadUserImage(userAddDto.UserName,userAddDto.PictureFile);
+                var uploadedUserImage = await _ımageHelper.Upload(userAddDto.UserName,userAddDto.PictureFile,PictureType.User);
                 userAddDto.Picture = uploadedUserImage.resultStatus==ResultStatus.Succes? uploadedUserImage.Data.FullName
                     :"userImages/defaultUser.png";
                 var user=_mapper.Map<User>(userAddDto);
@@ -212,7 +213,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
                 var oldUserPicture = oldUser.Picture;
                 if (userUpdateDto.PictureFile != null)
                 {
-                    var uploadedUserImage = await _ımageHelper.uploadUserImage(userUpdateDto.UserName, userUpdateDto.PictureFile);
+                    var uploadedUserImage = await _ımageHelper.Upload(userUpdateDto.UserName, userUpdateDto.PictureFile,PictureType.User);
                     userUpdateDto.Picture = uploadedUserImage.resultStatus == ResultStatus.Succes ? uploadedUserImage.Data.FullName
                         : "userImages/defaultUser.png";
                     if (oldUserPicture != "userImages/defaultUser.png")
@@ -286,7 +287,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
                 var oldUserPicture = oldUser.Picture;
                 if (userUpdateDto.PictureFile != null)
                 {
-                    var uploadedUserImage = await _ımageHelper.uploadUserImage(userUpdateDto.UserName, userUpdateDto.PictureFile);
+                    var uploadedUserImage = await _ımageHelper.Upload(userUpdateDto.UserName, userUpdateDto.PictureFile,PictureType.User);
                     userUpdateDto.Picture = uploadedUserImage.resultStatus == ResultStatus.Succes ? uploadedUserImage.Data.FullName
                         : "userImages/defaultUser.png";
                     if (oldUserPicture != "userImages/defaultUser.png")

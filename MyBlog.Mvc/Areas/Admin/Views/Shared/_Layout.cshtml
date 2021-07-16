@@ -8,6 +8,8 @@
     <meta name="author" content="" />
     <title>@ViewBag.Title-Admin Paneli | MyBlog</title>
     @await Html.PartialAsync("_LayoutCssPartialView")
+    @await RenderSectionAsync("Styles", false)
+    <link href="~/AdminLTE/css/site.css" rel="stylesheet" />
 </head>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -53,5 +55,6 @@
     </div>
     @await Html.PartialAsync("_LayoutJsPartialView")
     @await RenderSectionAsync("Scripts",false)
+
 </body>
 </html>

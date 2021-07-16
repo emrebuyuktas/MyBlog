@@ -33,9 +33,9 @@ namespace MyBlog.Mvc
             services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt=> {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-            });
+            }).AddNToastNotifyToastr();
             services.AddSession();
-            services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile),typeof(UserProfile));
+            services.AddAutoMapper(typeof(CategoryProfile), typeof(ArticleProfile),typeof(UserProfile),typeof(ViewModelsProfile));
             services.loadMyServices(connectionString:Configuration.GetConnectionString("LocalDb"));
             services.AddScoped<IImageHelper, ImageHelper>();
             services.ConfigureApplicationCookie(option=>
@@ -68,7 +68,7 @@ namespace MyBlog.Mvc
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseNToastNotify();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapAreaControllerRoute(name:"Admin",areaName:"Admin",pattern:"Admin/{controller=Home}/{action=Index}/{id?}");

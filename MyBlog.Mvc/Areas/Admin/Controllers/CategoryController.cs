@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MyBlog.Entities.Concrete;
 using MyBlog.Entities.Dtos;
 using MyBlog.Mvc.Areas.Admin.Models;
+using MyBlog.Mvc.Helpers.Abstract;
 using MyBlog.Services.Abstract;
 using MyBlog.Shared.Utilities;
 using MyBlog.Shared.Utilities.Results.ComplexTypes;
@@ -16,11 +20,11 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService,UserManager<User> userManager,IMapper mapper,IImageHelper ımageHelper):base(userManager,mapper,ımageHelper)
         {
             _categoryService = categoryService;
         }
@@ -40,7 +44,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _categoryService.Add(CategoryAddDto, "Emre Büyüktaş");
+                var result = await _categoryService.Add(CategoryAddDto,LoggedInUser.UserName);
                 if (result.resultStatus == ResultStatus.Succes)
                 {
                     var categoryAjaxModel = JsonSerializer.Serialize(new CategoryAddAjaxViewMode 
@@ -69,7 +73,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
         [HttpPost]
         public async Task<JsonResult> Delete(int categoryId)
         {
-            var result = await _categoryService.Delete(categoryId, "Emre Büyüktaş");
+            var result = await _categoryService.Delete(categoryId, LoggedInUser.UserName);
             var deletedCategory = JsonSerializer.Serialize(result.Data);
             return Json(deletedCategory);
         }
@@ -88,7 +92,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _categoryService.Update(categoryUpdateDto, "Emre Büyüktaş");
+                var result = await _categoryService.Update(categoryUpdateDto, LoggedInUser.UserName);
                 if (result.resultStatus == ResultStatus.Succes)
                 {
                     var categoryUpdateAjaxModel = JsonSerializer.Serialize(new CategoryUpdateAjaxViewModel
