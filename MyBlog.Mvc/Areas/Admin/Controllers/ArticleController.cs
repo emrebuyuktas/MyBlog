@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyBlog.Entities.ComplexTypes;
@@ -35,6 +36,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin,Article.Read")]
         public async Task<IActionResult> Index()
         {
             var result = await _articleService.GetAllByNonDeleted();
@@ -45,6 +47,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             return NotFound();
         }
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin,Article.Creata")]
         public async Task<IActionResult> Add()
         {
             var result = await _categoryService.GetAllByNonDeleted();
@@ -59,6 +62,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             return NotFound();
         }
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Article.Creata")]
         public async Task<IActionResult> Add(ArticleAddViewModel articleAddViewModel)
         {
             if (ModelState.IsValid)
@@ -82,6 +86,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             return View(articleAddViewModel);
         }
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin,Article.Update")]
         public async Task<IActionResult> Update(int articleId)
         {
             var articleResult = await _articleService.GetArticleUpdateDto(articleId);
@@ -98,6 +103,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             }
         }
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Article.Update")]
         public async Task<IActionResult> Update(ArticleUpdateViewModel articleUpdateViewModel)
         {
             if (ModelState.IsValid)
@@ -136,6 +142,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
         }
        
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Article.Delete")]
         public async Task<JsonResult> Delete(int articleId)
         {
             var result = await _articleService.Delete(articleId,LoggedInUser.UserName);
@@ -144,6 +151,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin,Article.Read")]
         public async Task<JsonResult> GetAllArticles()
         {
             var articles = await _articleService.GetAllByNonDeletedAndActive();
@@ -151,6 +159,41 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
                 ReferenceHandler= ReferenceHandler.Preserve
             });
             return Json(result);
+        }
+        [Authorize(Roles = "SuperAdmin,Article.Read")]
+        [HttpGet]
+        public async Task<IActionResult> DeletedArticles()
+        {
+            var result = await _articleService.GetAllByDeleted();
+            return View(result.Data);
+
+        }
+        [Authorize(Roles = "SuperAdmin,Article.Read")]
+        [HttpGet]
+        public async Task<JsonResult> GetAllDeletedArticles()
+        {
+            var result = await _articleService.GetAllByDeleted();
+            var articles = JsonSerializer.Serialize(result, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            });
+            return Json(articles);
+        }
+        [Authorize(Roles = "SuperAdmin,Article.Update")]
+        [HttpPost]
+        public async Task<JsonResult> UndoDelete(int articleId)
+        {
+            var result = await _articleService.UndoDelete(articleId, LoggedInUser.UserName);
+            var undoDeleteArticleResult = JsonSerializer.Serialize(result);
+            return Json(undoDeleteArticleResult);
+        }
+        [Authorize(Roles = "SuperAdmin,Article.Delete")]
+        [HttpPost]
+        public async Task<JsonResult> HardDelete(int articleId)
+        {
+            var result = await _articleService.HardDelete(articleId);
+            var hardDeletedArticleResult = JsonSerializer.Serialize(result);
+            return Json(hardDeletedArticleResult);
         }
     }
 }

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MyBlog.Mvc.Helpers.Concrete
@@ -59,6 +60,10 @@ namespace MyBlog.Mvc.Helpers.Concrete
             }
             string oldFileName = Path.GetFileNameWithoutExtension(pictureFile.FileName);
             string fileExtension = Path.GetExtension(pictureFile.FileName);
+
+            Regex regex = new Regex("[*'\",._&#^@]");
+            name = regex.Replace(name,string.Empty);
+
             DateTime dateTime = DateTime.Now;
             string newFileName = $"{name}_{dateTime.FullDateAndTimeStringWithUnderScore()}{fileExtension}";
             var path = Path.Combine($"{_wwwroot}/{imgFolder}/{folderName}", newFileName);

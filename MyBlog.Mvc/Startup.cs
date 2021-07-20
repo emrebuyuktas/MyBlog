@@ -30,7 +30,9 @@ namespace MyBlog.Mvc
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt=> {
+            services.AddControllersWithViews(options=> {
+                options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(value=>"Bu alan boþ geçilemez.");
+            }).AddRazorRuntimeCompilation().AddJsonOptions(opt=> {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
             }).AddNToastNotifyToastr();
@@ -40,8 +42,8 @@ namespace MyBlog.Mvc
             services.AddScoped<IImageHelper, ImageHelper>();
             services.ConfigureApplicationCookie(option=>
             {
-                option.LoginPath = new PathString("/Admin/User/Login");
-                option.LogoutPath = new PathString("/Admin/User/Logout");
+                option.LoginPath = new PathString("/Admin/Auth/Login");
+                option.LogoutPath = new PathString("/Admin/Auth/Logout");
                 option.Cookie = new CookieBuilder
                 {
                     Name="MyBlog",
@@ -51,7 +53,7 @@ namespace MyBlog.Mvc
                 };
                 option.SlidingExpiration = true; //kullanýcýnýn tekrar giriþ yapmasý gereken süreyi belirliyoruz
                 option.ExpireTimeSpan = System.TimeSpan.FromDays(7);
-                option.AccessDeniedPath = new PathString("/Admin/User/AccessDenied"); //sisteme giriþ yapmýþ ama yetkisi olmayan alana eriþmeye çalýþan kiþileri yönlendiriyoruz
+                option.AccessDeniedPath = new PathString("/Admin/Auth/AccessDenied"); //sisteme giriþ yapmýþ ama yetkisi olmayan alana eriþmeye çalýþan kiþileri yönlendiriyoruz
             });
         }
 

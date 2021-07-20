@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyBlog.Data.Concrete.EntitiyFramework.Mappings;
+using MyBlog.Data.Concrete.EntityFramework.Mappings;
 using MyBlog.Entities.Concrete;
 using System;
 using System.Collections.Generic;

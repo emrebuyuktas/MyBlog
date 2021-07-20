@@ -15,10 +15,12 @@ namespace MyBlog.Services.Abstract
         Task<IDataResult<CategoryUpdateDto>> GetCategoryUpdateDto(int categoryId);
         Task<IDataResult<CategoryListDto>> GetAll();//bütün kategorileri getir
         Task<IDataResult<CategoryListDto>> GetAllByNonDeleted();//silinmemiş kategorileri alır
+        Task<IDataResult<CategoryListDto>> GetAllByDeleted();
         Task<IDataResult<CategoryListDto>> GetAllByNonDeletedAndActive();
         Task<IDataResult<CategoryDto>> Add(CategoryAddDto categoryAddDto,string createdByName); //kategori ekleme işlemi yapacak, ekleme işleminin durumuna göre result dönecek
         Task<IDataResult<CategoryDto>> Update(CategoryUpdateDto categoryUpdateDto,string modifiedByName);
         Task<IDataResult<CategoryDto>> Delete(int categoryId, string modifiedByName);
+        Task<IDataResult<CategoryDto>> UndoDelete(int categoryId, string modifiedByName);
         Task<IResult> HardDelete(int categoryId);
         Task<IDataResult<int>> Count();
         Task<IDataResult<int>> CountByNonDeleted();

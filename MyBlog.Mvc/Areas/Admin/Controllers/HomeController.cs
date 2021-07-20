@@ -29,12 +29,12 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             _commentService = commentService;
             _userManager = userManager;
         }
-
+        [Authorize(Roles = "SuperAdmin,AdminArea.Home.Read")]
         public async Task<IActionResult> Index()
         {
             var categoriesCount = await _categoryService.CountByNonDeleted();
             var artcilesCount = await _articleService.CountByNonDeleted();
-            var commentCount = await _commentService.CountByNonDeleted();
+            var commentCount = await _commentService.CountByNonDeletedAsync();
             var userCount = await _userManager.Users.CountAsync();
             var allArtciles = await _articleService.GetAll();
             if (categoriesCount.resultStatus==ResultStatus.Succes && artcilesCount.resultStatus == ResultStatus.Succes && 

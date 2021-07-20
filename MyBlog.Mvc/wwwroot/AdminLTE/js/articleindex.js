@@ -15,9 +15,6 @@
                 },
                 className: 'btn btn-success',
                 action: function (e, dt, node, config) {
-                    let url = window.location.href;
-                    url = url.replace("/Index", "");
-                    window.open(`${url}/Add`, "_self");
                 }
             },
                         {
@@ -67,7 +64,7 @@
                                             `${convertToShortDate(newArticle.ModifiedDate)}`,
                                             newArticle.ModifiedByName,
                                             `
-                                <button class="btn btn-primary btn-sm btn-update" data-id="${newArticle.Id}"><span class="fas fa-edit"></span></button>
+                                <a class="btn btn-primary btn-sm btn-update"href="/Admin/Article/Update?${newArticle.Id}"><span class="fas fa-edit"></span></a>
                                 <button class="btn btn-danger btn-sm btn-delete" data-id="${newArticle.Id}"><span class="fas fa-minus-circle"></span></button>
                                             `
                                         ]).node();

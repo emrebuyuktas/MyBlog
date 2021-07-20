@@ -37,7 +37,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             _signInManager = signInManager;
             _ımageHelper = ımageHelper;
         }
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles ="SuperAdmin,User.Read")]
         public async Task<IActionResult> Index()
         {
             var users = await _usermanager.Users.ToListAsync();
@@ -47,56 +47,9 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
                 ResultStatus=ResultStatus.Succes
             });
         }
+
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View("UserLogin");
-        }
-        [HttpPost]
-        public async Task<IActionResult> Login(UserLoginDto userLoginDto)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await _usermanager.FindByEmailAsync(userLoginDto.Email);
-                if (user!=null)
-                {
-                    var result = await _signInManager.PasswordSignInAsync(user,userLoginDto.Password,userLoginDto.RememberMe,false);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("","E posta adresiniz yada şifreniz yanlıştır");
-                        return View("UserLogin");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "E posta adresiniz yada şifreniz yanlıştır");
-                    return View("UserLogin");
-                }
-            }
-            else
-            {
-                return View("UserLogin");
-            }
-            
-        }
-        [Authorize]
-        [HttpGet]
-        public async Task<IActionResult> Logout()
-        {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index","Home",new {Area="" });
-        }
-        [HttpGet]
-        public ViewResult AccessDenied()
-        {
-            return View();
-        }
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Read")]
         public async Task<JsonResult> GetAllUsers()
         {
            var users = await _usermanager.Users.ToListAsync();
@@ -111,13 +64,13 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             return Json(userListDto);
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Create")]
         public IActionResult Add()
         {
             return PartialView("_UserAddPartialView");
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Create")]
         public async Task<IActionResult> Add(UserAddDto userAddDto)
         {
             if (ModelState.IsValid)
@@ -163,13 +116,18 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             return Json(userAddAjaxErrorModelState);
 
         }
-        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Authorize(Roles = "SuperAdmin,User.Delete")]
         public async Task<JsonResult> Delete(int userId)
         {
             var user = await _usermanager.FindByIdAsync(userId.ToString());
             var result = await _usermanager.DeleteAsync(user);
             if (result.Succeeded)
             {
+                if (user.Picture!="userImages/defaultUser.png")
+                {
+                    _ımageHelper.Delete(user.Picture);
+                }
                 var deletedUser = JsonSerializer.Serialize(new UserDto
                 {
                     ResultStatus = ResultStatus.Succes,
@@ -195,7 +153,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             }
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Update")]
         public async Task<PartialViewResult> Update(int userId)
         {
             var user = await _usermanager.Users.FirstOrDefaultAsync(u => u.Id == userId);
@@ -203,7 +161,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             return PartialView("_UserUpdatePartialView ", userUpdateDto);
         }
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "SuperAdmin,User.Update")]
         public async Task<IActionResult> Update(UserUpdateDto userUpdateDto)
         {
             if (ModelState.IsValid)
@@ -360,6 +318,13 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
                 return View(userPasswordChangeDto);
             }
             return View();
+        }
+        [Authorize(Roles = "SuperAdmin,User.Read")]
+        [HttpGet]
+        public async Task<PartialViewResult> GetDetail(int userId)
+        {
+            var user = await _usermanager.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            return PartialView("_GetDetailPartial", new UserDto { User = user });
         }
     }
 }

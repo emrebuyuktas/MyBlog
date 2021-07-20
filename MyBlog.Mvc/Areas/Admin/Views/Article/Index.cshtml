@@ -81,6 +81,13 @@
 </div>
 @section Scripts{
     <script src="~/AdminLTE/js/articleindex.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#btnAdd').click(function () {
+                window.location.href = '@Url.Action("Add","Article")';
+            });
+        });
+    </script>
 }
 @section Styles{
-    }
+}

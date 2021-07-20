@@ -1,25 +1,23 @@
-﻿@using MyBlog.Shared.Utilities.Results.ComplexTypes;
+﻿@using MyBlog.Shared.Utilities.Results.ComplexTypes
 @model MyBlog.Entities.Dtos.UserListDto
 @{
     Layout = "_Layout";
-    ViewBag.Title = "Kullanıcılar Index";
+    ViewBag.Title = "Kullanıcılar";
 }
 <ol class="breadcrumb mb-3 mt-2">
     <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="Home" asp-action="Index">Admin</a></li>
     <li class="breadcrumb-item active"><a asp-area="Admin" asp-controller="User" asp-action="Index">Kullanıcılar</a></li>
 </ol>
-@if (Model.ResultStatus == MyBlog.Shared.Utilities.Results.ComplexTypes.ResultStatus.Succes)
+@if (Model.ResultStatus == ResultStatus.Succes)
 {
-    <div id="modalPlaceHolder" aria-hidden="true">
-
-    </div>
+    <div id="modalPlaceHolder" aria-hidden="true"></div>
     <div class="card mb-4 mt-2">
         <div class="card-header">
             <i class="fas fa-table mr-1"></i>
             Kullanıcılar
         </div>
         <div class="card-body">
-            <div class="spinner-border" role="status" style="display:none;">
+            <div class="spinner-border" role="status" style="display: none;">
                 <span class="sr-only">Yükleniyor...</span>
             </div>
             <div class="table-responsive">
@@ -28,8 +26,11 @@
                         <tr>
                             <th>ID</th>
                             <th>Kullanıcı Adı</th>
-                            <th>E Posta Adresi</th>
+                            <th>E-Posta Adresi</th>
+                            <th>Adı</th>
+                            <th>Soyadı</th>
                             <th>Telefon Numarası</th>
+                            <th>Hakkında</th>
                             <th>Resim</th>
                             <th>İşlemler</th>
                         </tr>
@@ -38,8 +39,11 @@
                         <tr>
                             <th>ID</th>
                             <th>Kullanıcı Adı</th>
-                            <th>E Posta Adresi</th>
+                            <th>E-Posta Adresi</th>
+                            <th>Adı</th>
+                            <th>Soyadı</th>
                             <th>Telefon Numarası</th>
+                            <th>Hakkında</th>
                             <th>Resim</th>
                             <th>İşlemler</th>
                         </tr>
@@ -51,11 +55,16 @@
                                 <td>@user.Id</td>
                                 <td>@user.UserName</td>
                                 <td>@user.Email</td>
+                                <td>@user.FirstName</td>
+                                <td>@user.LastName</td>
                                 <td>@user.PhoneNumber</td>
-                                <td><img src="~/img/@user.Picture" class="my-image-table"></td>
+                                <td>@(user.About.Length>75 ? user.About.Substring(0,75):user.About)</td>
+                                <td><img src="~/img/@user.Picture" alt="@user.UserName" class="my-image-table" /></td>
                                 <td>
-                                    <button class="btn btn-primary btn-sm btn-block btn-update" data-id="@user.Id"><span class="fas fa-edit"> </span> Düzenle</button>
-                                    <button class="btn btn-danger btn-delete btn-sm btn-block" data-id="@user.Id"><span class="fas fa-minus-circle"> </span>Sil</button>
+                                    <button class="btn btn-info btn-sm btn-detail" data-id="@user.Id"><span class="fas fa-newspaper"></span></button>
+                                    <button class="btn btn-warning btn-sm btn-assign" data-id="@user.Id"><span class="fas fa-user-shield"></span></button>
+                                    <button class="btn btn-primary btn-sm btn-update" data-id="@user.Id"><span class="fas fa-edit"></span></button>
+                                    <button class="btn btn-danger btn-sm btn-delete" data-id="@user.Id"><span class="fas fa-minus-circle"></span></button>
                                 </td>
                             </tr>
                         }
@@ -65,15 +74,14 @@
         </div>
     </div>
 }
-
-@*@if (Model.ResultStatus == MyBlog.Shared.Utilities.Results.ComplexTypes.ResultStatus.Error)
-    {
-        <div class="alert alert-danger">
-            @Model.Message <br />
-            Dashboard sayfasına geri dönmek için <a class="alert-link" asp-area="Admin" asp-controller="Home" asp-action="Index"> tıklayınız</a>.
-        </div>
-    }*@
-
-@section Scripts{ 
-<script src="~/AdminLTE/js/userIndex.js"></script>
+@if (Model.ResultStatus == ResultStatus.Error)
+{
+    <div class="alert alert-danger mt-3">
+        @Model.Message <br />
+        Dashboard sayfasına geri dönmek için lütfen <a class="alert-link" asp-area="Admin" asp-controller="Home" asp-action="Index">tıklayınız.</a>
+    </div>
+}
+@section Scripts
+{
+    <script src="~/AdminLTE/js/userIndex.js" type="application/ecmascript"></script>
 }

@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 namespace MyBlog.Mvc.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
     public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
@@ -28,17 +27,20 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
         {
             _categoryService = categoryService;
         }
-
+        [Authorize(Roles = "SuperAdmin,Category.Read")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var result = await _categoryService.GetAllByNonDeleted();
             return View(result.Data);
         }
+        [Authorize(Roles = "SuperAdmin,Category.Create")]
         [HttpGet]
         public IActionResult Add()
         {
             return PartialView("_CategoryAddPartialView");
         }
+        [Authorize(Roles = "SuperAdmin,Category.Create")]
         [HttpPost]
         public async Task<IActionResult> Add(CategoryAddDto CategoryAddDto)
         {
@@ -61,6 +63,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             });
             return Json(categoryAjaxErrorModel);
         }
+        [Authorize(Roles = "SuperAdmin,Category.Read")]
         public async Task<JsonResult> GetAllCategories()
         {
             var result = await _categoryService.GetAllByNonDeleted();
@@ -71,6 +74,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             return Json(categories);
         }
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Category.Delete")]
         public async Task<JsonResult> Delete(int categoryId)
         {
             var result = await _categoryService.Delete(categoryId, LoggedInUser.UserName);
@@ -78,6 +82,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             return Json(deletedCategory);
         }
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin,Category.Update")]
         public async Task<IActionResult> Update(int categoryId)
         {
             var result = await _categoryService.GetCategoryUpdateDto(categoryId);
@@ -88,6 +93,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
             return NotFound();
         }
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Category.Update")]
         public async Task<IActionResult> Update(CategoryUpdateDto categoryUpdateDto)
         {
             if (ModelState.IsValid)
@@ -108,6 +114,40 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
                 categoryUpdatePartial = await this.RenderViewToStringAsync("_CategoryAddPartialView", categoryUpdateDto)
             });
             return Json(categoryAjaxErrorModel);
+        }
+        [Authorize(Roles = "SuperAdmin,Category.Read")]
+        [HttpGet]
+        public async Task<IActionResult> DeletedCategories()
+        {
+            var result = await _categoryService.GetAllByDeleted();
+            return View(result.Data);
+        }
+        [Authorize(Roles = "SuperAdmin,Category.Read")]
+        [HttpGet]
+        public async Task<JsonResult> GetAllDeletedCategories()
+        {
+            var result = await _categoryService.GetAllByDeleted();
+            var categories = JsonSerializer.Serialize(result.Data, new JsonSerializerOptions
+            {
+                ReferenceHandler = ReferenceHandler.Preserve
+            });
+            return Json(categories);
+        }
+        [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Category.Update")]
+        public async Task<JsonResult> UndoDelete(int categoryId)
+        {
+            var result = await _categoryService.UndoDelete(categoryId, LoggedInUser.UserName);
+            var deletedCategory = JsonSerializer.Serialize(result.Data);
+            return Json(deletedCategory);
+        }
+        [HttpPost]
+        [Authorize(Roles = "SuperAdmin,Category.Delete")]
+        public async Task<JsonResult> HardDelete(int categoryId)
+        {
+            var result = await _categoryService.HardDelete(categoryId);
+            var deletedCategory = JsonSerializer.Serialize(result);
+            return Json(deletedCategory);
         }
     }
 }

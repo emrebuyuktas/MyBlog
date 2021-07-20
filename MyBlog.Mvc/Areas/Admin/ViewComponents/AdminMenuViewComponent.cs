@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using MyBlog.Entities.Concrete;
@@ -19,10 +20,14 @@ namespace MyBlog.Mvc.Areas.Admin.ViewComponents
             _userManager = userManager;
         }
 
-        public ViewViewComponentResult Invoke()
+        public async Task<IViewComponentResult> InvokeAsync()
         {
-            var user = _userManager.GetUserAsync(HttpContext.User).Result; //login olan kullanıcıya HttpContext.User ile ulaşılabilir
-            var roles = _userManager.GetRolesAsync(user).Result;
+            var user = await _userManager.GetUserAsync(HttpContext.User); //login olan kullanıcıya HttpContext.User ile ulaşılabilir
+            if (user == null)
+                return Content("Kullanıcı bulunamadı.");
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles == null)
+                return Content("Roller bulunamadı.");
             return View(new UserWithRolesViewModel { 
             User=user,
             Roles=roles
