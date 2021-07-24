@@ -22,6 +22,7 @@ namespace MyBlog.Shared.Data.Abstract
         Task<T> AddASync(T entity);
         Task<T> UpdateAsync(T entity);
         Task DeleteAsync(T entity);
+        Task<IList<T>> Search(IList<Expression<Func<T,bool>>>predicates, params Expression<Func<T, object>>[] includeProperties);
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate); //kullanıcı vs eklenirken daha önce eklenmiş mi gibi kontroller için
         Task<int> CountAsync(Expression<Func<T, bool>> predicate=null);
     }

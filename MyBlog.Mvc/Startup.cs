@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MyBlog.Entities.Concrete;
 using MyBlog.Mvc.AutoMapper.Profiles;
 using MyBlog.Mvc.Helpers.Abstract;
 using MyBlog.Mvc.Helpers.Concrete;
@@ -30,6 +31,8 @@ namespace MyBlog.Mvc
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AboutUsPageInfo>(Configuration.GetSection("AboutUsPageInfo"));
+            services.Configure<WebSiteInfo>(Configuration.GetSection("WebSiteInfo"));
             services.AddControllersWithViews(options=> {
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(value=>"Bu alan boþ geçilemez.");
             }).AddRazorRuntimeCompilation().AddJsonOptions(opt=> {

@@ -1,31 +1,127 @@
-﻿@{
-    Layout = "_ComingSoonLayout";
-    ViewBag.Title = "Çok Yakında!";
+﻿@using System.Text.RegularExpressions
+@model MyBlog.Entities.Dtos.ArticleListdDto
+@{
+    ViewBag.Title = "Anasayfa";
+    Layout = "_Layout";
+    Regex regex = new Regex("<[^>]*>");
 }
-<div class="flex-col-c-m p-l-15 p-r-15 p-t-50 p-b-120">
-    <h3 class="l1-txt2 txt-center p-b-40 respon1">
-        ÇOK YAKINDA
-    </h3>
+<div class="col-md-8">
 
-    <div class="flex-w flex-c-m cd100">
-        <div class="flex-col-c wsize1 m-b-30">
-            <span class="l1-txt2 p-b-9 days">35</span>
-            <span class="s1-txt1 where1 p-l-35">Gün</span>
+    <h1 class="my-4">
+        Son Paylaşılan Makaleler
+    </h1>
+    <form class="">
+        <div class="form-row">
+            <input type="hidden" id="category-id" value="@(Model.CategoryId!=null?Model.CategoryId.Value:null)" />
+            <input type="hidden" id="current-page" value="@Model.CurrentPage" />
+            <div class="form-group col-md-6">
+                <select class="form-control" id="select-page-size">
+                    <option selected="@(Model.PageSize==5 ? "selected":null)" value="5">5</option>
+                    <option selected="@(Model.PageSize==10 ? "selected":null)" value="10">10</option>
+                    <option selected="@(Model.PageSize==20 ? "selected":null)" value="20">20</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <select class="form-control" id="select-is-ascending">
+                    <option selected="@(Model.IsAscending==false ? "selected":null)" value="false">En Yeni</option>
+                    <option selected="@(Model.IsAscending==true ? "selected":null)" value="true">En Eski</option>
+                </select>
+            </div>
         </div>
+    </form>
+    @foreach (var article in Model.Articles)
+    {
+        <!-- Blog Post -->
+        <div class="card mb-4">
+            <img class="card-img-top" src="~/img/@article.Thumbnail" alt="@article.Title">
+            <div class="card-body">
+                <h2 class="card-title">@article.Title</h2>
+                <p class="card-text">
+                    @{
+                        article.Content = regex.Replace(article.Content, "");
+                    }
+                    @(article.Content.Length>250 ? article.Content.Substring(0,250) : article.Content)
+                </p>
+                <a asp-controller="Article" asp-action="Detail" asp-route-articleId="@article.Id" class="btn btn-primary">Daha fazla oku &rarr;</a>
+            </div>
+            <div class="card-footer text-muted">
+                @article.User.UserName tarafından @article.Date tarihinde paylaşıldı.
+            </div>
+        </div>
+    }
 
-        <div class="flex-col-c wsize1 m-b-30">
-            <span class="l1-txt2 p-b-9 hours">17</span>
-            <span class="s1-txt1 where1 p-l-35">Saat</span>
-        </div>
+    <!-- Pagination -->
+<ul class="pagination justify-content-center mb-4">
+    @{
+        @if (Model.ShowPrevious)
+        {
+            <li class="page-item">
+                @if (Model.CategoryId != null)
+                {
 
-        <div class="flex-col-c wsize1 m-b-30">
-            <span class="l1-txt2 p-b-9 minutes">50</span>
-            <span class="s1-txt1 where1 p-l-35">Dakika</span>
-        </div>
+                    <a class="page-link" asp-route-currentPage="@(Model.CurrentPage-1)" asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize" asp-route-categoryId="@Model.CategoryId.Value">Önceki</a>
+                }
+                else
+                {
+                    <a class="page-link" asp-route-currentPage="@(Model.CurrentPage-1)"  asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize">Önceki</a>
+                }
+            </li>
+        }
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i==Model.CurrentPage?" active":"")">
+                @if (Model.CategoryId != null)
+                {
+                    <a class="page-link" asp-route-currentPage="@i" asp-route-categoryId="@Model.CategoryId.Value"  asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize">@i</a>
+                }
+                else
+                {
+                    <a class="page-link" asp-route-currentPage="@i"  asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize">@i</a>
+                }
 
-        <div class="flex-col-c wsize1 m-b-30">
-            <span class="l1-txt2 p-b-9 seconds">39</span>
-            <span class="s1-txt1 where1 p-l-35">Saniye</span>
-        </div>
-    </div>
+            </li>
+        }
+        @if (Model.ShowNext)
+        {
+            <li class="page-item">
+                @if (Model.CategoryId != null)
+                {
+
+                    <a class="page-link" asp-route-currentPage="@(Model.CurrentPage+1)" asp-route-categoryId="@Model.CategoryId.Value"  asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize">Sonraki</a>
+                }
+                else
+                {
+            <a class="page-link" asp-route-currentPage="@(Model.CurrentPage+1)"  asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize">Sonraki</a>
+                }
+            </li>
+        }
+    }
+
+</ul>
+
 </div>
+@section Scripts{ 
+    <script>
+        $(document).ready(function () {
+            $(function () {
+
+                const selectPageSize = $('#select-page-size');
+                const selectIsAscending = $('#select-is-ascending');
+                const keyword = $('#keyword').val();
+                const currentPage = $('#current-page').val();
+                const keywordQuery = keyword !== null ? `&keyword=${keyword}` : null;
+
+                selectPageSize.on('change',
+                    function () {
+                        window.location =
+                            `/?pageSize=${selectPageSize.val()}&isAscending=${selectIsAscending.val()}${keywordQuery != null ? keywordQuery : null}&currentPage=${currentPage}`;
+                    });
+                selectIsAscending.on('change',
+                    function () {
+                        window.location =
+                            `/?pageSize=${selectPageSize.val()}&isAscending=${selectIsAscending.val()}${keywordQuery != null ? keywordQuery : null}&currentPage=${currentPage}`;
+                    });
+            });
+        });
+    </script>
+}

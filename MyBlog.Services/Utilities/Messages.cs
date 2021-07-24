@@ -49,6 +49,10 @@ namespace MyBlog.Services.Utilities
             {
                 return $"{articleTitle} başlıklı makale başarıyla arşivden geri getirilmiştir";
             }
+            public static string IncreaseViewCount(string title)
+            {
+                return $"{title} başlıklı makalenin görüntülenme sayısı başarıyla arttırılmıştır.";
+            }
         }
         public static class Comment
         {
@@ -83,6 +87,7 @@ namespace MyBlog.Services.Utilities
             {
                 return $"{createdByName} tarafından eklenen yorum başarıyla arşivden geri getirilmiştir";
             }
+
         }
     }
 }

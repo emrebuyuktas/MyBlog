@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LinqKit;
+using Microsoft.EntityFrameworkCore;
 using MyBlog.Shared.Data.Abstract;
 using MyBlog.Shared.Entities.Abstract;
 using System;
@@ -71,6 +72,28 @@ namespace MyBlog.Shared.Data.Concrete.EntityFramework
                 }
             }
             return await query.SingleOrDefaultAsync();
+        }
+
+        public async Task<IList<TEntity>> Search(IList<Expression<Func<TEntity, bool>>> predicates, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+            if (predicates.Any())
+            {
+                var predicateChain = PredicateBuilder.New<TEntity>();
+                foreach (var predicate in predicates)
+                {
+                    predicateChain.Or(predicate);
+                }
+                query = query.Where(predicateChain);
+            }
+            if (includeProperties.Any())
+            {
+                foreach (var include in includeProperties)
+                {
+                    query = query.Include(include);
+                }
+            }
+            return await query.ToListAsync();
         }
 
         public async Task<TEntity> UpdateAsync(TEntity entity)

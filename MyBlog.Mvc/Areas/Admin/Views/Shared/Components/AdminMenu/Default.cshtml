@@ -9,6 +9,10 @@
                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                     Dashboard
                 </a>
+                <a class="nav-link" asp-area="null" asp-controller="Home" asp-action="Index">
+                    <div class="sb-nav-link-icon"><i class="fas fa-blog"></i></div>
+                    Blog Modülü
+                </a>
                 <div class="sb-sidenav-menu-heading">İçerikler</div>
                 <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="Index">
                     <div class="sb-nav-link-icon"><i class="fas fa-th-list"></i></div>
@@ -44,7 +48,7 @@
                 </a>
                 <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav">
-                        <a class="nav-link"asp-area="Admin" asp-controller="Category" asp-action="DeletedCategories">Kategoriler</a>
+                        <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="DeletedCategories">Kategoriler</a>
                         <a class="nav-link" asp-area="Admin" asp-controller="Article" asp-action="DeletedArticles">Makaleler</a>
                         <a class="nav-link" asp-area="Admin" asp-controller="Comment" asp-action="DeletedComments">Yorumlar</a>
                     </nav>
