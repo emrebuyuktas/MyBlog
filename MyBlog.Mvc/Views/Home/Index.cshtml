@@ -32,9 +32,9 @@
     @foreach (var article in Model.Articles)
     {
         <!-- Blog Post -->
-        <div class="card mb-4">
+        <div class="card border-info mb-4">
             <img class="card-img-top" src="~/img/@article.Thumbnail" alt="@article.Title">
-            <div class="card-body">
+            <div class="card-body text-info">
                 <h2 class="card-title">@article.Title</h2>
                 <p class="card-text">
                     @{

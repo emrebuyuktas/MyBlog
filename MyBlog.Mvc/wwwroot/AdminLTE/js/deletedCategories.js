@@ -24,7 +24,7 @@
                             const deletedCategories = jQuery.parseJSON(data);
                             dataTable.clear();
                             console.log(deletedCategories);
-                            if (deletedCategories.resultStatus===0) {
+                            if (deletedCategories.ResultStatus === 0) {
                                 $.each(deletedCategories.Categories.$values,
                                     function (index, category) {
                                         const newTableRow = dataTable.row.add([
@@ -34,10 +34,10 @@
                                             category.IsActive ? "Evet" : "Hayır",
                                             category.IsDeleted ? "Evet" : "Hayır",
                                             category.Note,
-                                            convertToShortDate(category.CreatedDate),
+                                            convertToShortDate(category.CreateDate),
                                             category.CreatedByName,
-                                            convertToShortDate(category.ModifiedDate),
-                                            category.ModifiedByName,
+                                            convertToShortDate(category.ModiefiedDate),
+                                            category.ModiefiedByName,
                                             `
                                 <button class="btn btn-warning btn-sm btn-undo" data-id="${category.Id}"><span class="fas fa-undo"></span></button>
                                 <button class="btn btn-danger btn-sm btn-delete" data-id="${category.Id}"><span class="fas fa-minus-circle"></span></button>
@@ -171,8 +171,8 @@
                     $.ajax({
                         type: 'POST',
                         dataType: 'json',
-                        data: { commentId: id },
-                        url: '/Admin/Comment/HardDelete/',
+                        data: { categoryId: id },
+                        url: '/Admin/Category/HardDelete/',
                         success: function (data) {
                             const hardDeleteResult = jQuery.parseJSON(data);
                             console.log(hardDeleteResult);

@@ -32,7 +32,6 @@
                         success: function (data) {
                             const articleResult = jQuery.parseJSON(data);
                             dataTable.clear();
-                            console.log(articleResult);
                             if (articleResult.Data.ResultStatus === 0) {
                                 let categoriesArray = [];
                                 $.each(articleResult.Data.Articles.$values,
@@ -55,14 +54,14 @@
                                             newArticle.Title,
                                             `<img src="/img/${newArticle.Thumbnail}" alt="${newArticle.Title}" class="my-image-table" />`,
                                             `${convertToShortDate(newArticle.Date)}`,
-                                            newArticle.ViewCount,
+                                            newArticle.ViewsCount,
                                             newArticle.CommentCount,
                                             `${newArticle.IsActive ? "Evet" : "Hayır"}`,
                                             `${newArticle.IsDeleted ? "Evet" : "Hayır"}`,
-                                            `${convertToShortDate(newArticle.CreatedDate)}`,
+                                            `${convertToShortDate(newArticle.CreateDate)}`,
                                             newArticle.CreatedByName,
-                                            `${convertToShortDate(newArticle.ModifiedDate)}`,
-                                            newArticle.ModifiedByName,
+                                            `${convertToShortDate(newArticle.ModiefiedDate)}`,
+                                            newArticle.ModiefiedByName,
                                             `
                                 <a class="btn btn-primary btn-sm btn-update"href="/Admin/Article/Update?${newArticle.Id}"><span class="fas fa-edit"></span></a>
                                 <button class="btn btn-danger btn-sm btn-delete" data-id="${newArticle.Id}"><span class="fas fa-minus-circle"></span></button>

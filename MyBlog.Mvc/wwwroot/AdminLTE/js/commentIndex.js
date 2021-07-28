@@ -44,10 +44,10 @@
                                             newComment.Text.length > 75 ? newComment.Text.substring(0, 75) : newComment.Text,
                                             `${newComment.IsActive ? "Evet" : "Hayır"}`,
                                             `${newComment.IsDeleted ? "Evet" : "Hayır"}`,
-                                            `${convertToShortDate(newComment.CreatedDate)}`,
+                                            `${convertToShortDate(newComment.CreateDate)}`,
                                             newComment.CreatedByName,
-                                            `${convertToShortDate(newComment.ModifiedDate)}`,
-                                            newComment.ModifiedByName,
+                                            `${convertToShortDate(newComment.ModiefiedDate)}`,
+                                            newComment.ModiefiedByName,
                                             getButtonsForDataTable(newComment)
                                         ]).node();
                                         const jqueryTableRow = $(newTableRow);
@@ -208,10 +208,10 @@
                                 commentUpdateAjaxModel.CommentDto.Comment.Text.length > 75 ? commentUpdateAjaxModel.CommentDto.Comment.Text.substring(0, 75) : commentUpdateAjaxModel.CommentDto.Comment.Text,
                                 `${commentUpdateAjaxModel.CommentDto.Comment.IsActive ? "Evet" : "Hayır"}`,
                                 `${commentUpdateAjaxModel.CommentDto.Comment.IsDeleted ? "Evet" : "Hayır"}`,
-                                `${convertToShortDate(commentUpdateAjaxModel.CommentDto.Comment.CreatedDate)}`,
+                                `${convertToShortDate(commentUpdateAjaxModel.CommentDto.Comment.CreateDate)}`,
                                 commentUpdateAjaxModel.CommentDto.Comment.CreatedByName,
-                                `${convertToShortDate(commentUpdateAjaxModel.CommentDto.Comment.ModifiedDate)}`,
-                                commentUpdateAjaxModel.CommentDto.Comment.ModifiedByName,
+                                `${convertToShortDate(commentUpdateAjaxModel.CommentDto.Comment.ModiefiedDate)}`,
+                                commentUpdateAjaxModel.CommentDto.Comment.ModiefiedByName,
                                 getButtonsForDataTable(commentUpdateAjaxModel.CommentDto.Comment)
                             ]);
                             tableRow.attr("name", `${id}`);
@@ -239,7 +239,7 @@
 
     $(function() {
 
-        const url = '/Admin/Comment/GetDetail/';
+        const url = '/Admin/Comment/GetDetails/';
         const placeHolderDiv = $('#modalPlaceHolder');
         $(document).on('click',
             '.btn-detail',

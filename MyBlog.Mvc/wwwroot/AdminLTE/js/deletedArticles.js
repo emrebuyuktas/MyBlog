@@ -23,8 +23,8 @@
                         success: function (data) {
                             const articleResult = jQuery.parseJSON(data);
                             dataTable.clear();
-                            console.log(articleResult);
-                            if (articleResult.ResultStatus === 0) {
+                            console.log(articleResult.Data.ResultStatus);
+                            if (articleResult.Data.ResultStatus === 0) {
                                 let categoriesArray = [];
                                 $.each(articleResult.Data.Articles.$values,
                                     function (index, article) {
@@ -48,10 +48,10 @@
                                             newArticle.CommentCount,
                                             `${newArticle.IsActive ? "Evet" : "Hayır"}`,
                                             `${newArticle.IsDeleted ? "Evet" : "Hayır"}`,
-                                            `${convertToShortDate(newArticle.CreatedDate)}`,
+                                            `${convertToShortDate(newArticle.CreateDate)}`,
                                             newArticle.CreatedByName,
-                                            `${convertToShortDate(newArticle.ModifiedDate)}`,
-                                            newArticle.ModifiedByName,
+                                            `${convertToShortDate(newArticle.ModiefiedDate)}`,
+                                            newArticle.ModiefiedByName,
                                             `
                                 <button class="btn btn-primary btn-sm btn-undo" data-id="${newArticle.Id}"><span class="fas fa-undo"></span></button>
                                 <button class="btn btn-danger btn-sm btn-delete" data-id="${newArticle.Id}"><span class="fas fa-minus-circle"></span></button>

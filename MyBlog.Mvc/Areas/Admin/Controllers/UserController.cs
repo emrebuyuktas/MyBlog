@@ -158,7 +158,7 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
         {
             var user = await _usermanager.Users.FirstOrDefaultAsync(u => u.Id == userId);
             var userUpdateDto = _mapper.Map<UserUpdateDto>(user);
-            return PartialView("_UserUpdatePartialView ", userUpdateDto);
+            return PartialView("_UserUpdatePartialView", userUpdateDto);
         }
         [HttpPost]
         [Authorize(Roles = "SuperAdmin,User.Update")]
