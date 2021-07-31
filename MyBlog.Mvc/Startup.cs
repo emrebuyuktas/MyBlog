@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyBlog.Entities.Concrete;
 using MyBlog.Mvc.AutoMapper.Profiles;
+using MyBlog.Mvc.Filters;
 using MyBlog.Mvc.Helpers.Abstract;
 using MyBlog.Mvc.Helpers.Concrete;
 using MyBlog.Services.AutoMapper.Profiles;
@@ -35,6 +36,7 @@ namespace MyBlog.Mvc
             services.Configure<WebSiteInfo>(Configuration.GetSection("WebSiteInfo"));
             services.AddControllersWithViews(options=> {
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(value=>"Bu alan boþ geçilemez.");
+                options.Filters.Add<MvcExceptionFilter>();
             }).AddRazorRuntimeCompilation().AddJsonOptions(opt=> {
                 opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;

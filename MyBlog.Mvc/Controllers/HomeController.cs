@@ -31,7 +31,6 @@ namespace MyBlog.Mvc.Controllers
         [HttpGet]
         public IActionResult About()
         {
-            
             return View(_aboutUsPageInfo);
         }
         [HttpGet]
