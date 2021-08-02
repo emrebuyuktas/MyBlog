@@ -1,6 +1,6 @@
 ﻿@using Microsoft.Extensions.Options
 @using MyBlog.Entities.Concrete
-@inject IOptions<WebSiteInfo> WebSiteInfo
+@inject IOptionsSnapshot<WebSiteInfo> WebSiteInfo
 @{ 
     var websiteInfo = WebSiteInfo.Value;
 }

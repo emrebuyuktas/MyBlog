@@ -3,6 +3,8 @@ using Microsoft.Extensions.Options;
 using MyBlog.Entities.Concrete;
 using MyBlog.Entities.Dtos;
 using MyBlog.Services.Abstract;
+using MyBlog.Shared.Utilities.Helpers.Abstract;
+using NToastNotify;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +16,17 @@ namespace MyBlog.Mvc.Controllers
     {
         private readonly IArticleService _articleService;
         private readonly AboutUsPageInfo _aboutUsPageInfo;
+        private readonly IMailService _mailService;
+        private readonly IToastNotification _toastNotification;
+        private readonly IWritableOptions<AboutUsPageInfo> _aboutUsPageInfoWriter;
 
-        public HomeController(IArticleService articleService,IOptions<AboutUsPageInfo> aboutUsPageInfo)
+        public HomeController(IArticleService articleService, IOptionsSnapshot<AboutUsPageInfo> aboutUsPageInfo, IMailService mailService, IToastNotification toastNotification, IWritableOptions<AboutUsPageInfo> aboutUsPageInfoWriter)
         {
             _articleService = articleService;
             _aboutUsPageInfo = aboutUsPageInfo.Value;
+            _mailService = mailService;
+            _toastNotification = toastNotification;
+            _aboutUsPageInfoWriter = aboutUsPageInfoWriter;
         }
         [HttpGet]
         public async Task<IActionResult> Index(int?categoryId,int currentPage=1,int pageSize=5,bool isAscending=false)
@@ -42,8 +50,13 @@ namespace MyBlog.Mvc.Controllers
         [HttpPost]
         public IActionResult Contact(EmailSendDto emailSendDto)
         {
-
-            return View();
+            if (ModelState.IsValid)
+            {
+                var result = _mailService.SendContactEmail(emailSendDto);
+                _toastNotification.AddSuccessToastMessage(result.Message, new ToastrOptions { Title = "Başarılı işlem" });
+                return View();
+            }
+            return View(emailSendDto);
         }
     }
 }
