@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using MyBlog.Entities.ComplexTypes;
 using MyBlog.Entities.Concrete;
+using MyBlog.Mvc.Attributes;
 using MyBlog.Mvc.Models;
 using MyBlog.Services.Abstract;
 using MyBlog.Shared.Utilities.Results.ComplexTypes;
@@ -32,6 +33,7 @@ namespace MyBlog.Mvc.Controllers
             });
         }
         [HttpGet]
+        [ViewCountFilter]
         public async Task<IActionResult> Detail(int articleId)
         {
             var article = await _articleService.Get(articleId);
@@ -40,7 +42,7 @@ namespace MyBlog.Mvc.Controllers
                 var userArticles = await _articleService.GetAllByUserIdOnFilter(article.Data.Article.UserId,
                     _articleRightSideBarWidgetOptions.FilterBy, _articleRightSideBarWidgetOptions.OrderBy, _articleRightSideBarWidgetOptions.IsAscending, _articleRightSideBarWidgetOptions.TakeSize, _articleRightSideBarWidgetOptions.CategoryId, _articleRightSideBarWidgetOptions.StartAt,
                     _articleRightSideBarWidgetOptions.EndAt, _articleRightSideBarWidgetOptions.MinViewCount, _articleRightSideBarWidgetOptions.MaxViewCount, _articleRightSideBarWidgetOptions.MinCommentCount, _articleRightSideBarWidgetOptions.MaxCommentCount);
-                await _articleService.IncreaseViewCountAsync(articleId);
+                //await _articleService.IncreaseViewCountAsync(articleId);
                 return View(new ArticleDetailViewModel { 
                     ArticleDto=article.Data,
                     ArticleDetailRightSiteBarViewModel=new ArticleDetailRightSiteBarViewModel

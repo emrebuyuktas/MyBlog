@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace MyBlog.Mvc.Controllers
 {
+    [Route("/")]
     public class HomeController : Controller
     {
         private readonly IArticleService _articleService;
@@ -28,6 +29,9 @@ namespace MyBlog.Mvc.Controllers
             _toastNotification = toastNotification;
             _aboutUsPageInfoWriter = aboutUsPageInfoWriter;
         }
+        [Route("index")]
+        [Route("anasayfa")]
+        [Route("")]
         [HttpGet]
         public async Task<IActionResult> Index(int?categoryId,int currentPage=1,int pageSize=5,bool isAscending=false)
         {
@@ -36,11 +40,14 @@ namespace MyBlog.Mvc.Controllers
 
             return View(articlesResult.Data);
         }
+        [Route("Hakkimizda")]
+        [Route("Hakkinda")]
         [HttpGet]
         public IActionResult About()
         {
             return View(_aboutUsPageInfo);
         }
+        [Route("iletisim")]
         [HttpGet]
         public IActionResult Contact()
         {
