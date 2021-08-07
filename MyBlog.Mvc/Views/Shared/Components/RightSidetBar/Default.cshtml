@@ -1,6 +1,7 @@
-﻿  @model MyBlog.Mvc.Models.RightSidetBarViewModel 
+﻿@model MyBlog.Mvc.Models.RightSidetBarViewModel
+@using MyBlog.Mvc.Extensions
 
-          <!-- Sidebar Widgets Column -->
+<!-- Sidebar Widgets Column -->
 <div class="col-md-4">
 
     <!-- Search Widget -->
@@ -30,9 +31,10 @@
                         </li>
                         @foreach (var category in Model.Categories)
                         {
-                    <li class="list-group-item">
-                        <a asp-controller="Home" asp-action="Index" asp-route-categoryId="@category.Id">@category.Name </a>
-                    </li>}
+            <li class="list-group-item list-group-item-action list-group-item-light">
+                <a asp-controller="Home" asp-action="Index" asp-route-categoryId="@category.Id">@category.Name </a>
+            </li>
+}
                     </ul>
                 </div>
             </div>
@@ -51,16 +53,16 @@
                             if (i % 2 == 0)
                             {
 
-                    <li class="list-group-item-primary">
-                        <a asp-controller="Article" asp-action="Details" asp-route-categoryId="@Model.Articles[i].Id">@Model.Articles[i].Title </a>
-                    </li> }
-                                    else
-                                    {
-                                        <li class="list-group-item-info">
-                                            <a asp-controller="Article" asp-action="Details" asp-route-categoryId="@Model.Articles[i].Id">@Model.Articles[i].Title </a>
-                                        </li>
-                                    }
-                                }
+            <li class="list-group-item-primary">
+                <a href="/@Url.FriendlyUrlHelper(Model.Articles[i].Title)/@Model.Articles[i].Id">@Model.Articles[i].Title</a>
+            </li>
+ }
+        else
+        {
+<li class="list-group-item-info">
+    <a href="/@Url.FriendlyUrlHelper(Model.Articles[i].Title)/@Model.Articles[i].Id">@Model.Articles[i].Title</a>
+</li>}
+            }
                     </ul>
                 </div>
             </div>

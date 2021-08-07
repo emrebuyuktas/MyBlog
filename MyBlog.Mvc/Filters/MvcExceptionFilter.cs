@@ -28,7 +28,7 @@ namespace MyBlog.Mvc.Filters
 
         public void OnException(ExceptionContext context)
         {
-            if (_envoriment.IsDevelopment())
+            if (_envoriment.IsProduction())
             {
                 context.ExceptionHandled = true;
                 var mvcErrorModel = new MvcErrorModel();

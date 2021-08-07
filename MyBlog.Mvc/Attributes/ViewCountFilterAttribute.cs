@@ -14,17 +14,20 @@ namespace MyBlog.Mvc.Attributes
     {
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            var articleId = context.ActionArguments["articleId"];
-            if (articleId is not null)
-            {
-                string artlicleValue = context.HttpContext.Request.Cookies[$"article{articleId}"];
-                if (string.IsNullOrEmpty(artlicleValue))
+            if (context.ActionArguments.ContainsKey("articleId")) {
+                var articleId = context.ActionArguments["articleId"];
+                if (articleId is not null)
                 {
-                    Set($"article{articleId}",articleId.ToString(),1,context.HttpContext.Response);
-                    var articleService = context.HttpContext.RequestServices.GetService<IArticleService>();
-                    await articleService.IncreaseViewCountAsync(Convert.ToInt32(articleId));
-                    await next();
+                    string artlicleValue = context.HttpContext.Request.Cookies[$"article{articleId}"];
+                    if (string.IsNullOrEmpty(artlicleValue))
+                    {
+                        Set($"article{articleId}", articleId.ToString(), 1, context.HttpContext.Response);
+                        var articleService = context.HttpContext.RequestServices.GetService<IArticleService>();
+                        await articleService.IncreaseViewCountAsync(Convert.ToInt32(articleId));
+                        await next();
+                    }
                 }
+                await next();
             }
             await next();
         }

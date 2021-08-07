@@ -112,8 +112,8 @@ namespace MyBlog.Mvc.Areas.Admin.Controllers
                 var oldThumbnail = articleUpdateViewModel.Thumbnail;
                 if (articleUpdateViewModel.ThumbnailFile != null)
                 {
-                    var uploadedImage = await _imageHelper.Upload(articleUpdateViewModel.Title, articleUpdateViewModel.ThumbnailFile, PictureType.Post);
-                    articleUpdateViewModel.Thumbnail = uploadedImage.resultStatus == ResultStatus.Succes ? uploadedImage.Data.FolderName : "postImages/defaultThumbnail.jpg";
+                    var uploadedImage = await ImageHelper.Upload(articleUpdateViewModel.Title, articleUpdateViewModel.ThumbnailFile, PictureType.Post);
+                    articleUpdateViewModel.Thumbnail = uploadedImage.resultStatus == ResultStatus.Succes ? uploadedImage.Data.FullName : "postImages/defaultThumbnail.jpg";
                     if (oldThumbnail != "postImages/defaultThumbnail.jpg")
                     {
                         isNewThumbnail = true;
