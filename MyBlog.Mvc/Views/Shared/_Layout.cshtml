@@ -24,18 +24,18 @@
     <link href="~/BlogHome/css/blog-home.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
-
+   @RenderSection("Styles",false)
 </head>
 
 <body>
 
     <!-- Navigation -->
     <partial name="_MainMenuPartial" />
-
+    <div class="row col-lg-12 mt-4 mb-4"></div>
     <!-- Page Content -->
     <div class="container">
 
-        <div class="row">
+        <div class="row" style="background: #fff; -webkit-box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.1); box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.1); }">
 
             @RenderBody()
             @await Component.InvokeAsync("RightSidetBar");
@@ -57,7 +57,7 @@
     <script src="~/BlogHome/vendor/jquery/jquery.min.js"></script>
     <script src="~/BlogHome/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" crossorigin="anonymous"></script>
-    @RenderSectionAsync("Scripts", false)
+    @RenderSection("Scripts", false)
 </body>
 
 </html>

@@ -6,6 +6,9 @@
     Layout = "_Layout";
     Regex regex = new Regex("<[^>]*>");
 }
+@section Styles{
+<link href="~/BlogHome/css/main.css" rel="stylesheet">
+}
 <div class="col-md-8">
     <form class="">
         <div class="form-row mt-4">
@@ -26,16 +29,16 @@
             </div>
         </div>
     </form>
-
+    <div class="blog-entries">
         @foreach (var article in Model.Articles)
         {
             <!-- Blog Post -->
-            <div class="col">
-                <div class="card mb-3 border-secondary bg-light">
+            <div class="col blog-entry">
+                <div class="card mb-3 bg-light">
                     <img style="max-height:270px" class="card-img-top img-fluid img-thumbnail" src="~/img/@article.Thumbnail" alt="@article.Title">
                     <div class="card-body">
                         <h2 class="card-title">@article.Title</h2>
-                        <p class="card-text">
+                        <p class="card-text bg-light text-black">
                             @{
                                 article.Content = regex.Replace(article.Content, "");
                             }
@@ -44,7 +47,7 @@
                         @*<a asp-controller="Article" asp-action="Detail" asp-route-articleId="@article.Id" class="btn btn-primary">Daha fazla oku &rarr;</a>*@
                         <a href="/@Url.FriendlyUrlHelper(article.Title)/@article.Id" class="btn btn-primary">Daha fazla oku &rarr;</a>
                     </div>
-                    <div class="card-footer text-muted bg-transparent border-secondary">
+                    <div class="card-footer text-muted bg-transparent">
                         <p>
                             <span class="fas fa-user ml-2"></span> @article.User.UserName   <span class="fas fa-comment ml-2"></span> @article.CommentCount
                             <span class="fas fa-eye ml-2"></span> @article.ViewsCount   <span class="fas fa-clock ml-2"></span> @article.CreateDate.ToShortDateString()
@@ -53,6 +56,7 @@
                 </div>
             </div>
         }
+    </div>
     <!-- Pagination -->
     <ul class="pagination justify-content-center mb-4">
         @{
@@ -62,11 +66,11 @@
                     @if (Model.CategoryId != null)
                     {
 
-                        <a class="page-link" asp-route-currentPage="@(Model.CurrentPage-1)" asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize" asp-route-categoryId="@Model.CategoryId.Value">Önceki</a>
+                        <a class="page-link" asp-route-currentPage="@(Model.CurrentPage-1)" asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize" asp-route-categoryId="@Model.CategoryId.Value"><span class="fas fa-arrow-left"></span></a>
                     }
                     else
                     {
-                        <a class="page-link" asp-route-currentPage="@(Model.CurrentPage-1)" asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize">Önceki</a>
+                        <a class="page-link" asp-route-currentPage="@(Model.CurrentPage-1)" asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize"><span class="fas fa-arrow-left"></span></a>
                     }
                 </li>
             }
@@ -90,11 +94,11 @@
                     @if (Model.CategoryId != null)
                     {
 
-                        <a class="page-link" asp-route-currentPage="@(Model.CurrentPage+1)" asp-route-categoryId="@Model.CategoryId.Value" asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize">Sonraki</a>
+                        <a class="page-link" asp-route-currentPage="@(Model.CurrentPage+1)" asp-route-categoryId="@Model.CategoryId.Value" asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize"><span class="fas fa-arrow-right"></span></a>
                     }
                     else
                     {
-                        <a class="page-link" asp-route-currentPage="@(Model.CurrentPage+1)" asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize">Sonraki</a>
+                        <a class="page-link" asp-route-currentPage="@(Model.CurrentPage+1)" asp-route-isAscending="@Model.IsAscending" asp-route-pageSize="@Model.PageSize"><span class="fas fa-arrow-right"></span></a>
                     }
                 </li>
             }

@@ -23,7 +23,7 @@ namespace MyBlog.Mvc.Controllers
             _articleService = articleService;
             _articleRightSideBarWidgetOptions = articleRightSideBarWidgetOptions.Value;
         }
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Search(string keyword,int currentPage=1,int pageSize=5,bool isAscending=false)
         {
             var searchResult = await _articleService.Search(keyword, currentPage, pageSize, isAscending);

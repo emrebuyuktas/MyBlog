@@ -1,9 +1,14 @@
 ﻿@using System.Text.RegularExpressions
 @model MyBlog.Mvc.Models.ArticleSearchViewModel
+@using MyBlog.Mvc.Extensions
 @{
     ViewBag.Title = "Arama Sonuçları";
     Layout = "_Layout";
     Regex regex = new Regex("<[^>]*>");
+}
+
+@section Styles{
+    <link href="~/BlogHome/css/main.css" rel="stylesheet">
 }
 <div class="col-md-8">
 
@@ -29,55 +34,85 @@
             </div>
         </div>
     </form>
-    @foreach (var article in Model.ArticleLisDto.Articles)
-    {
-        <!-- Blog Post -->
-        <div class="card mb-4">
-            <img class="card-img-top" src="~/img/@article.Thumbnail" alt="@article.Title">
-            <div class="card-body">
-                <h2 class="card-title">@article.Title</h2>
-                <p class="card-text">
-                    @{
-                        article.Content = regex.Replace(article.Content, "");
-                    }
-                    @(article.Content.Length>250 ? article.Content.Substring(0,250) : article.Content)
-                </p>
-                <a asp-controller="Article" asp-action="Detail" asp-route-articleId="@article.Id" class="btn btn-primary">Daha fazla oku &rarr;</a>
+    <div class="blog-entries">
+        @foreach (var article in Model.ArticleLisDto.Articles)
+        {
+            <!-- Blog Post -->
+            <div class="col blog-entry">
+                <div class="card mb-3 bg-light">
+                    <img style="max-height:270px" class="card-img-top img-fluid img-thumbnail" src="~/img/@article.Thumbnail" alt="@article.Title">
+                    <div class="card-body">
+                        <h2 class="card-title">@article.Title</h2>
+                        <p class="card-text bg-light text-black">
+                            @{
+                                article.Content = regex.Replace(article.Content, "");
+                            }
+                            @(article.Content.Length>250 ? article.Content.Substring(0,150) : article.Content)...
+                        </p>
+                        @*<a asp-controller="Article" asp-action="Detail" asp-route-articleId="@article.Id" class="btn btn-primary">Daha fazla oku &rarr;</a>*@
+                        <a href="/@Url.FriendlyUrlHelper(article.Title)/@article.Id" class="btn btn-primary">Daha fazla oku &rarr;</a>
+                    </div>
+                    <div class="card-footer text-muted bg-transparent">
+                        <p>
+                            <span class="fas fa-user ml-2"></span> @article.User.UserName   <span class="fas fa-comment ml-2"></span> @article.CommentCount
+                            <span class="fas fa-eye ml-2"></span> @article.ViewsCount   <span class="fas fa-clock ml-2"></span> @article.CreateDate.ToShortDateString()
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div class="card-footer text-muted">
-                @article.User.UserName tarafından @article.Date tarihinde paylaşıldı.
-            </div>
-        </div>
-    }
-
+        }
+    </div>
     <!-- Pagination -->
-<ul class="pagination justify-content-center mb-4">
-    @{
-        @if (Model.ArticleLisDto.ShowPrevious)
-        {
-            <li class="page-item">
-                
-                    <a class="page-link" asp-route-currentPage="@(Model.ArticleLisDto.CurrentPage-1)"  asp-route-isAscending="@Model.ArticleLisDto.IsAscending" asp-route-pageSize="@Model.ArticleLisDto.PageSize" asp-route-keyword="@Model.Keyword">Önceki</a>
-            </li>
-        }
-        @for (int i = 1; i <= Model.ArticleLisDto.TotalPages; i++)
-        {
-            <li class="page-item @(i==Model.ArticleLisDto.CurrentPage?" active":"")">
-                    <a class="page-link" asp-route-currentPage="@i"  asp-route-isAscending="@Model.ArticleLisDto.IsAscending" asp-route-pageSize="@Model.ArticleLisDto.PageSize" asp-route-keyword="@Model.Keyword">@i</a>
-            </li>
-        }
-        @if (Model.ArticleLisDto.ShowNext)
-        {
-            <li class="page-item">
-                <a class="page-link" asp-route-currentPage="@(Model.ArticleLisDto.CurrentPage+1)"  asp-route-isAscending="@Model.ArticleLisDto.IsAscending" asp-route-pageSize="@Model.ArticleLisDto.PageSize" asp-route-keyword="@Model.Keyword">Sonraki</a>
-            </li>
-        }
-    }
+    <ul class="pagination justify-content-center mb-4">
+        @{
+            @if (Model.ArticleLisDto.ShowPrevious)
+            {
+                <li class="page-item">
+                    @if (Model.ArticleLisDto.CategoryId != null)
+                    {
 
-</ul>
+                        <a class="page-link" asp-route-currentPage="@(Model.ArticleLisDto.CurrentPage-1)" asp-route-isAscending="@Model.ArticleLisDto.IsAscending" asp-route-pageSize="@Model.ArticleLisDto.PageSize" asp-route-categoryId="@Model.ArticleLisDto.CategoryId.Value"><span class="fas fa-arrow-left"></span></a>
+                    }
+                    else
+                    {
+                        <a class="page-link" asp-route-currentPage="@(Model.ArticleLisDto.CurrentPage-1)" asp-route-isAscending="@Model.ArticleLisDto.IsAscending" asp-route-pageSize="@Model.ArticleLisDto.PageSize"><span class="fas fa-arrow-left"></span></a>
+                    }
+                </li>
+            }
+            @for (int i = 1; i <= Model.ArticleLisDto.TotalPages; i++)
+            {
+                <li class="page-item @(i==Model.ArticleLisDto.CurrentPage?" active":"")">
+                    @if (Model.ArticleLisDto.CategoryId != null)
+                    {
+                        <a class="page-link" asp-route-currentPage="@i" asp-route-categoryId="@Model.ArticleLisDto.CategoryId.Value" asp-route-isAscending="@Model.ArticleLisDto.IsAscending" asp-route-pageSize="@Model.ArticleLisDto.PageSize">@i</a>
+                    }
+                    else
+                    {
+                        <a class="page-link" asp-route-currentPage="@i" asp-route-isAscending="@Model.ArticleLisDto.IsAscending" asp-route-pageSize="@Model.ArticleLisDto.PageSize">@i</a>
+                    }
+
+                </li>
+            }
+            @if (Model.ArticleLisDto.ShowNext)
+            {
+                <li class="page-item">
+                    @if (Model.ArticleLisDto.CategoryId != null)
+                    {
+
+                        <a class="page-link" asp-route-currentPage="@(Model.ArticleLisDto.CurrentPage+1)" asp-route-categoryId="@Model.ArticleLisDto.CategoryId.Value" asp-route-isAscending="@Model.ArticleLisDto.IsAscending" asp-route-pageSize="@Model.ArticleLisDto.PageSize"><span class="fas fa-arrow-right"></span></a>
+                    }
+                    else
+                    {
+                        <a class="page-link" asp-route-currentPage="@(Model.ArticleLisDto.CurrentPage+1)" asp-route-isAscending="@Model.ArticleLisDto.IsAscending" asp-route-pageSize="@Model.ArticleLisDto.PageSize"><span class="fas fa-arrow-right"></span></a>
+                    }
+                </li>
+            }
+        }
+
+    </ul>
 
 </div>
-@section Scripts{ 
+@section Scripts{
     <script>
         $(document).ready(function () {
             $(function () {

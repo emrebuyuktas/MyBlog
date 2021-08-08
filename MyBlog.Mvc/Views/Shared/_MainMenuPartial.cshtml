@@ -4,45 +4,40 @@
 @{
     var websiteInfo = WebsiteInfo.Value;
 }
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="#">
-            <img src="~/img/logo.png" alt="Logo" style="width:40px;">
-        </a>
-        <a class="navbar-brand" asp-controller="Home" asp-action="Index">@websiteInfo.MenuTitle</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">
-                        Anasayfa
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="About">Hakkımızda</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Home" asp-action="Contact">İletişim</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Admin" asp-controller="Home" asp-action="Index">Yönetim Paneli</a>
-                </li>
-            </ul>
-        </div>
+@section Styles{
+<link href="~/BlogHome/css/main.css" rel="stylesheet">
+}
 
-    </div>
-</nav>
-<div class="container col-lg-12">
-    <div class="row">
-        <div class="card bg-dark text-white text-center">
-            <img class=" card-img img-fluid" src="~/img/banner.jpg" alt="...">
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" class="card-img-overlay text-center mt-5">
-                <h1 class="card-title">@websiteInfo.Title</h1>
-                <p class="card-text">@websiteInfo.SeoDescription</p>
+<div class="wrap mb-6">
+
+    <header role="banner">
+
+        <div class="container logo-wrap">
+            <div class="row pt-5">
+                <div class="col-12 text-center">
+                    <a class="absolute-toggle d-block d-md-none" data-toggle="collapse" href="#navbarMenu" role="button" aria-expanded="false" aria-controls="navbarMenu"><span class="burger-lines"></span></a>
+                    <h1 class="site-logo"><a style="text-decoration:none; color:black" asp-controller="Home" asp-action="Index">@websiteInfo.Title</a></h1>
+                </div>
             </div>
         </div>
-    </div>
+
+        <nav class="navbar navbar-expand-md  navbar-light bg-light">
+            <div class="container">
+                <div class="collapse navbar-collapse" id="navbarMenu">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" asp-controller="Home" asp-action="Index">Anasayfa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"  asp-controller="Home" asp-action="About">Hakkımızda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Contact">İletişim</a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
 </div>
