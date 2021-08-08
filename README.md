@@ -13,6 +13,8 @@ This is a blog development project, my purpose in this project is that using and
 * Global exception handling and logging
 * SMTP
 * Role based authorization
+* JQuery and its plugins such as datatable
+* Bootstrap 4
 * Dynamicizing the appsetting.json file
 * Paggination
 
